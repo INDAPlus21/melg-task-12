@@ -1,7 +1,9 @@
 # Program that generates a tree using L-system
 import pygame
 import random
-from pygame.math import Vector2
+import math
+import copy
+from pygame.math import Vector2, Vector3
 
 lines = []
 # F = forward + = rotate positive - = rotate negative [ = save branch ] = load branch
@@ -30,16 +32,31 @@ def game_loop(screen):
 
         screen.fill((184, 227, 226))
 
+        wind_factor = math.sin(pygame.time.get_ticks() / 1000)
+        wind_force = 50
+
         # Draw all lines
         leaf_index = 0
         for depth in range(0, len(lines)):
             for line in range(0, len(lines[depth])):
+                # Add wind
+                start_position = copy.copy(lines[depth][line][0])
+                wind_multiplier = (600 - start_position[1]) / 600
+                start_position += Vector2(1, 0) * \
+                    wind_multiplier * wind_force * wind_factor
+
+                end_position = copy.copy(lines[depth][line][1])
+                wind_multiplier = (600 - end_position[1]) / 600
+                end_position += Vector2(1, 0) * \
+                    wind_multiplier * wind_force * wind_factor
+
+                # Draw branches and leaves
                 pygame.draw.line(screen, (143, 79, 30),
-                                 lines[depth][line][0], lines[depth][line][1], max(1, int(5 * 0.95 ** depth)))
+                                 start_position, end_position, max(1, int(5 * 0.95 ** depth)))
 
                 if (depth, line) in leaf_nodes:
                     pygame.draw.circle(screen, (97, 212, 109),
-                                       lines[depth][line][1], 10)
+                                       end_position, 10)
 
                     if leaf_index < len(leaf_nodes) - 1:
                         leaf_index += 1
