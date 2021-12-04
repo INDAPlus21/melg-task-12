@@ -42,11 +42,11 @@ def game_loop(screen):
                     start_position = lines[depth][i][0]
                     direction = lines[depth][i][1] - start_position
                     end_position = start_position + direction * current_progress
-                    pygame.draw.line(screen, (100, 100, 100),
+                    pygame.draw.line(screen, (143, 79, 30),
                                      start_position, end_position, int(widths[depth]))
                 # Draw full branch
                 else:
-                    pygame.draw.line(screen, (100, 100, 100),
+                    pygame.draw.line(screen, (143, 79, 30),
                                      lines[depth][i][0], lines[depth][i][1], int(widths[depth]))
 
         # Increase tree growth
