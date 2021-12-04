@@ -29,7 +29,7 @@ def game_loop(screen):
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
                 generate_new_tree()
 
-        screen.fill((255, 255, 255))
+        screen.fill((184, 227, 226))
 
         # Draw all lines
         current_progress = current_depth - floor(current_depth)

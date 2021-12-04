@@ -7,6 +7,7 @@ lines = []
 # F = forward + = rotate positive - = rotate negative [ = save branch ] = load branch
 rule = ("F", "FF+[+F-F-F]-[-F+F+F]")
 saved_lines = []  # Line, rotation and depth
+leaf_nodes = set()
 
 
 def initialize_game():
@@ -27,16 +28,21 @@ def game_loop(screen):
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
                 generate_new_tree()
 
-        screen.fill((255, 255, 255))
+        screen.fill((184, 227, 226))
 
         # Draw all lines
+        leaf_index = 0
         for depth in range(0, len(lines)):
-            for line in lines[depth]:
+            for line in range(0, len(lines[depth])):
                 pygame.draw.line(screen, (143, 79, 30),
-                                 line[0], line[1], max(1, int(5 * 0.95 ** depth)))
+                                 lines[depth][line][0], lines[depth][line][1], max(1, int(5 * 0.95 ** depth)))
 
-                if depth == len(lines) - 1:
-                    pygame.draw.circle(screen, (0, 0, 255), line[1], 5)
+                if (depth, line) in leaf_nodes:
+                    pygame.draw.circle(screen, (97, 212, 109),
+                                       lines[depth][line][1], 10)
+
+                    if leaf_index < len(leaf_nodes) - 1:
+                        leaf_index += 1
 
         pygame.display.flip()
 
@@ -71,8 +77,8 @@ def add_lines(generation_string):
     last_line = lines[0][len(lines) - 1]
     current_angle = 0
 
-    for step in generation_string:
-        match step:
+    for step in range(0, len(generation_string)):
+        match generation_string[step]:
             case "F":
                 # Go forward
                 direction = (last_line[1] - last_line[0]
@@ -87,6 +93,11 @@ def add_lines(generation_string):
                     lines[branch_depth].append(line)
                 else:
                     lines.append([line])
+
+                # Detect leaf nodes
+                if step < len(generation_string) - 1 and generation_string[step + 1] == "]":
+                    leaf_nodes.add(
+                        (branch_depth, len(lines[branch_depth]) - 1))
 
                 last_line = line
                 current_angle = 0
