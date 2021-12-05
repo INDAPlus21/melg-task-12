@@ -3,9 +3,11 @@ import pygame
 import random
 import math
 import copy
-from pygame.math import Vector2, Vector3
+from pygame.color import Color
+from pygame.math import Vector2
 
 lines = []
+colours = []
 # F = forward + = rotate positive - = rotate negative [ = save branch ] = load branch
 rule = ("F", "FF+[+F-F-F]-[-F+F+F]")
 saved_lines = []  # Line, rotation and depth
@@ -55,8 +57,8 @@ def game_loop(screen):
                                  start_position, end_position, max(1, int(5 * 0.95 ** depth)))
 
                 if (depth, line) in leaf_nodes:
-                    pygame.draw.circle(screen, (97, 212, 109),
-                                       end_position, 10)
+                    pygame.draw.circle(
+                        screen, colours[leaf_index], end_position, 10)
 
                     if leaf_index < len(leaf_nodes) - 1:
                         leaf_index += 1
@@ -68,9 +70,12 @@ def game_loop(screen):
 
 def generate_new_tree():
     global lines
+    global colours
 
     lines = [[(Vector2(300, 600), Vector2(300, 580))]]
+    colours = []
     generation_string = generate_string(0, "F")
+
     add_lines(generation_string)
 
 
@@ -115,6 +120,10 @@ def add_lines(generation_string):
                 if step < len(generation_string) - 1 and generation_string[step + 1] == "]":
                     leaf_nodes.add(
                         (branch_depth, len(lines[branch_depth]) - 1))
+
+                    colour = Color(0, 0, 0)
+                    colour.hsva = (136, 70, random.randint(40, 80))
+                    colours.append(colour)
 
                 last_line = line
                 current_angle = 0
