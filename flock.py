@@ -66,7 +66,6 @@ for i in range(0, 25):
 
 def game_loop(screen):
     running = True
-    current_depth = -1.0
 
     while running:
         # Check for exit button
